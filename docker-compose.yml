@@ -1,0 +1,30 @@
+version: "3.5"
+
+services:
+  client:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+  db:
+    image: mysql:latest
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - db:/var/lib/mysql
+  spring-boot:
+    image: spring-boot
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "db"
+    volumes:
+      - ./:/usr/src/mymaven
+volumes:
+  db:
